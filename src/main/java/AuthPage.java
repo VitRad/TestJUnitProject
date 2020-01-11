@@ -10,8 +10,8 @@ public class AuthPage {
 
     private By regButtom = By.xpath("//span[contains(text(),'Регистрация')]");
 
-    public RegistrPage setRegButtom(){
+    public CardNumberPage setRegButtom(){
         driver.findElement(regButtom).click();
-        return new RegistrPage(driver);
+        return new CardNumberPage(driver);
     }
 }

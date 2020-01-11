@@ -2,6 +2,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -59,11 +60,15 @@ public class RegistrTests {
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(invalidCard);
+        WebElement we = cardNumberPage.findElement(cardNumberPage.cardNumberField);
+        we.sendKeys(Keys.BACK_SPACE);
+        String s = cardNumberPage.getErrorCard1();
         String text = cardNumberPage.getCardNumberFromField();
         assertEquals("Ошибка ввода в поле", "", text);
-        System.out.println("Text: " + text);
         WebElement cont = cardNumberPage.findElement(cardNumberPage.buttomContinue);
         assertFalse(cont.isEnabled());
+        assertEquals("Некорректное сообщение", "Необходимо ввести номер вашей карты Сбербанка",s);
+
     }
     @Test
     public void TS_005_CheckCardNumberFieldLength(){
@@ -74,7 +79,33 @@ public class RegistrTests {
         assertEquals("Ошибка ввода в поле", 18, text.length());
     }
     @Test
-    public void TS_006_CheckContinueButtom(){
+    public void TS_006_InvalidCardNumber(){
+        AuthPage authPage = new AuthPage(driver);
+        CardNumberPage cardNumberPage = authPage.setRegButtom();
+        cardNumberPage.setCardNumberToField(cardNumber + cardNumber);
+        WebElement we = cardNumberPage.findElement(cardNumberPage.cardNumberField);
+        we.sendKeys(Keys.BACK_SPACE);
+        String s = cardNumberPage.getErrorCard2();
+        assertEquals("Некорректное сообщение",
+                "Вы неправильно указали\n" +
+                        "номер карты. Пожалуйста,\n" +
+                        "проверьте количество цифр\n" +
+                        "введённого номера карты\n" +
+                        "и их последовательность.",s);
+    }
+    @Test
+    public void TS_007_NotSberCardNumber(){
+        AuthPage authPage = new AuthPage(driver);
+        CardNumberPage cardNumberPage = authPage.setRegButtom();
+        cardNumberPage.setCardNumberToField("1");
+        String s = cardNumberPage.getErrorCard3();
+        assertEquals("Некорректное сообщение",
+                "Введена карта другого банка. " +
+                        "Пожалуйста, используйте карту " +
+                        "Сбербанка или проверьте корректность введённого номера.",s);
+    }
+    @Test
+    public void TS_008_CheckContinueButtom(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -83,7 +114,7 @@ public class RegistrTests {
         assertTrue(smsField.isEnabled());
     }
     @Test
-    public void TS_007_ValidCardNumberValidSmsCode(){
+    public void TS_009_ValidCardNumberValidSmsCode(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -94,7 +125,7 @@ public class RegistrTests {
         assertTrue(newLogin.isEnabled());
     }
     @Test
-    public void TS_008_ValidCardNumberInvalidSmsCode_Er1(){
+    public void TS_010_ValidCardNumberInvalidSmsCode_Er1(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -106,7 +137,7 @@ public class RegistrTests {
                 "У вас осталось 2 попытки", s);
     }
     @Test
-    public void TS_009_ValidCardNumberInvalidSmsCode_Er2(){
+    public void TS_011_ValidCardNumberInvalidSmsCode_Er2(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -123,7 +154,7 @@ public class RegistrTests {
                 "У вас осталась 1 попытка", s2);
     }
     @Test
-    public void TS_010_ValidCardNumberInvalidSmsCode_Er3(){
+    public void TS_012_ValidCardNumberInvalidSmsCode_Er3(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -147,7 +178,7 @@ public class RegistrTests {
     }
 
     @Test
-    public void TS_011_ValidCardNumberInvalidSmsCodeStartOver(){
+    public void TS_013_ValidCardNumberInvalidSmsCodeStartOver(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -173,7 +204,7 @@ public class RegistrTests {
         assertTrue(cnf.isEnabled());
     }
     @Test
-    public void TS_012_ValidCardNumberInvalidSmsCode_Short(){
+    public void TS_014_ValidCardNumberInvalidSmsCode_Short(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -184,7 +215,7 @@ public class RegistrTests {
         assertTrue(enterSMS.isEnabled());
     }
     @Test
-    public void TS_013_ValidCardNumberNullSmsCode(){
+    public void TS_015_ValidCardNumberNullSmsCode(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);
@@ -194,7 +225,7 @@ public class RegistrTests {
         assertTrue(enterSMS.isEnabled());
     }
     @Test
-    public void TS_014_ValidCardNumberStringSmsCode(){
+    public void TS_016_ValidCardNumberStringSmsCode(){
         AuthPage authPage = new AuthPage(driver);
         CardNumberPage cardNumberPage = authPage.setRegButtom();
         cardNumberPage.setCardNumberToField(cardNumber);

@@ -1,7 +1,6 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import sun.awt.SunHints;
 
 public class CardNumberPage {
     WebDriver driver;
